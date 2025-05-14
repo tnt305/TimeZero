@@ -43,43 +43,43 @@ class GRPOScriptArguments(ScriptArguments):
     )
     
     # GRPO arguments
-    max_prompt_length: int = field(
-        default=512,
-        metadata={"help": "Maximum length of prompt"},
-    )
+    # max_prompt_length: int = field(
+    #     default=512,
+    #     metadata={"help": "Maximum length of prompt"},
+    # )
     
-    max_completion_length: int = field(
-        default=128,
-        metadata={"help": "Maximum length of completion"},
-    )
+    # max_completion_length: int = field(
+    #     default=128,
+    #     metadata={"help": "Maximum length of completion"},
+    # )
     
-    num_generations: int = field(
-        default=2,
-        metadata={"help": "Number of generations per prompt"},
-    )
+    # num_generations: int = field(
+    #     default=2,
+    #     metadata={"help": "Number of generations per prompt"},
+    # )
     
-    beta: float = field(
-        default=0.1,
-        metadata={"help": "KL penalty coefficient"},
-    )
+    # beta: float = field(
+    #     default=0.1,
+    #     metadata={"help": "KL penalty coefficient"},
+    # )
     
-    # LoRA arguments
-    use_lora: bool = field(
-        default=True,
-        metadata={"help": "Whether to use LoRA for training"},
-    )
+    # # LoRA arguments
+    # use_lora: bool = field(
+    #     default=True,
+    #     metadata={"help": "Whether to use LoRA for training"},
+    # )
     
-    lora_r: int = field(
-        default=8,
-        metadata={"help": "LoRA attention dimension"},
-    )
+    # lora_r: int = field(
+    #     default=8,
+    #     metadata={"help": "LoRA attention dimension"},
+    # )
     
-    lora_alpha: int = field(
-        default=16,
-        metadata={"help": "LoRA alpha parameter"},
-    )
+    # lora_alpha: int = field(
+    #     default=16,
+    #     metadata={"help": "LoRA alpha parameter"},
+    # )
     
-    lora_dropout: float = field(
-        default=0.05,
-        metadata={"help": "LoRA dropout value"},
-    )
+    # lora_dropout: float = field(
+    #     default=0.05,
+    #     metadata={"help": "LoRA dropout value"},
+    # )

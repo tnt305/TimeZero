@@ -1,14 +1,11 @@
 {
     "fp16": {
-        "enabled": "auto",
+        "enabled": true,
         "loss_scale": 0,
         "loss_scale_window": 1000,
         "initial_scale_power": 16,
         "hysteresis": 2,
         "min_loss_scale": 1
-    },
-    "bf16": {
-        "enabled": "auto"
     },
     "optimizer": {
         "type": "AdamW",
@@ -23,26 +20,30 @@
         "stage": 3,
         "offload_optimizer": {
             "device": "cpu",
-            "pin_memory": true
+            "pin_memory": true,
+            "buffer_count": 4,  // Giảm số lượng buffer
+            "nvme_offload": false  // Tắt offload NVMe
         },
         "offload_param": {
             "device": "cpu",
-            "pin_memory": true
+            "pin_memory": true,
+            "buffer_count": 4,  // Giảm số lượng buffer
+            "nvme_offload": false  // Tắt offload NVMe
         },
         "overlap_comm": true,
         "contiguous_gradients": true,
-        "sub_group_size": 1e9,
-        "reduce_bucket_size": "auto",
-        "stage3_prefetch_bucket_size": "auto",
-        "stage3_param_persistence_threshold": "auto",
-        "stage3_max_live_parameters": 1e9,
-        "stage3_max_reuse_distance": 1e9,
+        "sub_group_size": 1e8,  // Giảm kích thước subgroup
+        "reduce_bucket_size": 5e7,  // Giảm kích thước bucket
+        "stage3_prefetch_bucket_size": 5e7,  // Giảm kích thước prefetch
+        "stage3_param_persistence_threshold": 1e5,  // Giảm ngưỡng persistence
+        "stage3_max_live_parameters": 1e8,  // Giảm số lượng parameters sống
+        "stage3_max_reuse_distance": 1e8,  // Giảm khoảng cách tái sử dụng
         "gather_16bit_weights_on_model_save": true
     },
-    "gradient_accumulation_steps": "auto",
-    "gradient_clipping": "auto",
+    "gradient_accumulation_steps": 4,  // Tăng gradient accumulation
+    "gradient_clipping": 1.0,
     "train_batch_size": "auto",
-    "train_micro_batch_size_per_gpu": "auto",
-    "steps_per_print": 1e5,
+    "train_micro_batch_size_per_gpu": 1,  // Giảm batch size
+    "steps_per_print": 100,
     "wall_clock_breakdown": false
 }

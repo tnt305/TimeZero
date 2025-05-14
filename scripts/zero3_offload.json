@@ -21,29 +21,29 @@
         "offload_optimizer": {
             "device": "cpu",
             "pin_memory": true,
-            "buffer_count": 4,  // Giảm số lượng buffer
-            "nvme_offload": false  // Tắt offload NVMe
+            "buffer_count": 4,  
+            "nvme_offload": false  
         },
         "offload_param": {
             "device": "cpu",
             "pin_memory": true,
-            "buffer_count": 4,  // Giảm số lượng buffer
-            "nvme_offload": false  // Tắt offload NVMe
+            "buffer_count": 4,  
+            "nvme_offload": false 
         },
         "overlap_comm": true,
         "contiguous_gradients": true,
-        "sub_group_size": 1e8,  // Giảm kích thước subgroup
-        "reduce_bucket_size": 5e7,  // Giảm kích thước bucket
-        "stage3_prefetch_bucket_size": 5e7,  // Giảm kích thước prefetch
-        "stage3_param_persistence_threshold": 1e5,  // Giảm ngưỡng persistence
-        "stage3_max_live_parameters": 1e8,  // Giảm số lượng parameters sống
-        "stage3_max_reuse_distance": 1e8,  // Giảm khoảng cách tái sử dụng
+        "sub_group_size": 1e8,  
+        "reduce_bucket_size": 5e7,  
+        "stage3_prefetch_bucket_size": 5e7, 
+        "stage3_param_persistence_threshold": 1e5,  
+        "stage3_max_live_parameters": 1e8,  
+        "stage3_max_reuse_distance": 1e8, 
         "gather_16bit_weights_on_model_save": true
     },
-    "gradient_accumulation_steps": 4,  // Tăng gradient accumulation
+    "gradient_accumulation_steps": 4,  
     "gradient_clipping": 1.0,
     "train_batch_size": "auto",
-    "train_micro_batch_size_per_gpu": 1,  // Giảm batch size
+    "train_micro_batch_size_per_gpu": 1, 
     "steps_per_print": 100,
     "wall_clock_breakdown": false
 }

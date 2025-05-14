@@ -63,11 +63,11 @@ class GRPOScriptArguments(ScriptArguments):
     #     metadata={"help": "KL penalty coefficient"},
     # )
     
-    # # LoRA arguments
-    # use_lora: bool = field(
-    #     default=True,
-    #     metadata={"help": "Whether to use LoRA for training"},
-    # )
+    # LoRA arguments
+    use_lora: bool = field(
+        default=True,
+        metadata={"help": "Whether to use LoRA for training"},
+    )
     
     # lora_r: int = field(
     #     default=8,

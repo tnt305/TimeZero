@@ -289,7 +289,7 @@ if __name__ == "__main__":
             "--fp16", "True",
             "--num_generations", "1",
             "--torch_dtype", "float16",
-            "--attn_implementation", "sdpa",
+            "--attn_implementation", "eager",
             "--load_in_4bit", "True",
             "--per_device_train_batch_size", "1",
             "--per_device_eval_batch_size", "1",

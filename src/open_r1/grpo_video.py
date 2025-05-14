@@ -278,7 +278,7 @@ if __name__ == "__main__":
     parser = TrlParser((GRPOScriptArguments, GRPOConfig, ModelConfig))
     default_args = [
             "--dataset_name", "tv360_video",
-            "--deepspeed" ,"./configs/zero3.yaml",
+            "--deepspeed" ,"./scripts/zero3_offload.json",
             "--model_name_or_path", "Qwen/Qwen2-VL-2B-Instruct",
             "--trust_remote_code", "True",
             "--fp16", "True",

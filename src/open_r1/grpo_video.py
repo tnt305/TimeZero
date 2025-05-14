@@ -171,7 +171,7 @@ def get_duration(video_path):
 def load_json_dataset(train_data_path, eval_data_path, preprocessed_data_path= "./dataset"): # Modified to accept preprocessed_data_path
     max_pixels = 3584 * 28 * 28
     min_pixels = 16 * 28 * 28
-    processor = AutoProcessor.from_pretrained("Qwen/Qwen2.5-VL-3B-Instruct")
+    processor = AutoProcessor.from_pretrained("Qwen/Qwen2-VL-2B-Instruct")
     def create_dataset_from_json(file_path, split_name):
         with open(file_path, 'r') as f:
             data = [json.loads(line) for line in f if line.strip()]
@@ -284,7 +284,7 @@ if __name__ == "__main__":
     parser = TrlParser((GRPOScriptArguments, GRPOConfig, ModelConfig))
     default_args = [
             "--dataset_name", "tv360_video",
-            "--model_name_or_path", "Qwen/Qwen2.5-VL-3B-Instruct",
+            "--model_name_or_path", "Qwen/Qwen2-VL-2B-Instruct",
             "--trust_remote_code", "True",
             "--fp16", "True",
             "--num_generations", "1",

@@ -5,6 +5,11 @@ export WANDB_NAME=Qwen2.5_7b_TG
 export PYTHONPATH=".:$PYTHONPATH"
 OUTDIR=outputs_video
 
+# Thêm các biến môi trường mới
+export CUDA_VISIBLE_DEVICES="0,1"
+export TRITON_DISABLE_BF16="1"
+export AWQ_FORCE_FP16="1"
+
 export DEBUG_MODE="true"
 export LOG_PATH="./qwen2.5_7b_vl_tg_video.txt"
 accelerate launch \

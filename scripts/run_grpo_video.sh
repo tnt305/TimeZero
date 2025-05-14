@@ -13,8 +13,8 @@ torchrun --nproc_per_node="2" \
     --node_rank="0" \
     --master_addr="127.0.0.1" \
     --master_port="12361" \
-    src/open_r1/grpo_video.py \
-    --deepspeed scripts/zero3_offload.json \
+    TimeZero/src/open_r1/grpo_video.py \
+    --deepspeed TimeZero/scripts/zero3_offload.json \
     --output_dir $OUTDIR \
     --model_name_or_path Qwen/Qwen2.5-VL-3B-Instruct \
     --preprocessed_data_path ./dataset \

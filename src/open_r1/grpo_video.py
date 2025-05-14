@@ -237,7 +237,7 @@ def main(script_args, training_args, model_args):
     else:
         lora_config = None
 
-    if not isinstance(training_args, GRPOConfig):
+    if isinstance(training_args, GRPOConfig):
         print("using deepspeed configs")
         training_args = GRPOConfig(
             **training_args.to_dict(),

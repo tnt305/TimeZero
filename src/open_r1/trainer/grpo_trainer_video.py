@@ -37,7 +37,8 @@ from transformers import (
     Trainer,
     TrainerCallback,
     is_wandb_available,
-    TorchAoConfig
+    TorchAoConfig,
+    BitsAndBytesConfig
 )
 from transformers.integrations.deepspeed import is_deepspeed_zero3_enabled
 from transformers.utils import is_peft_available
@@ -181,7 +182,12 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         model_init_kwargs = args.model_init_kwargs or {}
         model_init_kwargs["attn_implementation"] = attn_implementation
 
-        quantization_config = TorchAoConfig("int4_weight_only", group_size=128)
+        quantization_config = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_compute_dtype=torch.float16,
+                bnb_4bit_quant_type="nf4",
+                bnb_4bit_use_double_quant=True
+            )
         
         if isinstance(model, str):
             model_id = model

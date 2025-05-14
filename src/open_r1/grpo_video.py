@@ -227,7 +227,7 @@ def main(script_args, training_args, model_args):
     if script_args.use_lora:
         lora_config = LoraConfig(
             task_type="CAUSAL_LM",
-            target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+            target_modules=["k_proj", "v_proj", "o_proj"], #"gate_proj", "up_proj", "down_proj", "q_proj", 
             inference_mode=False,
             r= 4,
             lora_alpha=16,
@@ -284,7 +284,7 @@ if __name__ == "__main__":
     parser = TrlParser((GRPOScriptArguments, GRPOConfig, ModelConfig))
     default_args = [
             "--dataset_name", "tv360_video",
-            "--model_name_or_path", "Qwen/Qwen2.5-VL-3B-Instruct-AWQ",
+            "--model_name_or_path", "DevQuasar/Qwen.Qwen2.5-VL-3B-Instruct-GGUF",
             "--trust_remote_code", "True",
             "--fp16", "True",
             "--num_generations", "1",

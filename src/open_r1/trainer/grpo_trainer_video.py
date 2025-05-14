@@ -205,6 +205,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                     model, 
                     torch_dtype=torch.float16,
                     use_sliding_window=True,
+                    load_in_4bit = True,
                     **model_init_kwargs
                     )
             elif "Aria" in model_id:

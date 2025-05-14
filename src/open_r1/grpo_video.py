@@ -229,9 +229,9 @@ def main(script_args, training_args, model_args):
             task_type="CAUSAL_LM",
             target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
             inference_mode=False,
-            r=script_args.lora_r,
-            lora_alpha=script_args.lora_alpha,
-            lora_dropout=script_args.lora_dropout,
+            r= 4,
+            lora_alpha=16,
+            lora_dropout=0.025,
             bias="none",
         )
     else:

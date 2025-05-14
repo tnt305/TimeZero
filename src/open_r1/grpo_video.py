@@ -237,19 +237,13 @@ def main(script_args, training_args, model_args):
     else:
         lora_config = None
 
-    # if not isinstance(training_args, GRPOConfig):
-    #     training_args = GRPOConfig(
-    #         **training_args.to_dict(),
-    #         max_prompt_length= 512 ,
-    #         max_completion_length= 256,
-    #         num_generations= 1,
-    #         per_device_train_batch_size=1,
-    #         gradient_accumulation_steps=4,
-    #         fp16=True,
-    #         gradient_checkpointing=True,
-    #         optim="adamw_torch",
-    #         lr_scheduler_type="cosine",
-    #     )
+    if not isinstance(training_args, GRPOConfig):
+        print("using deepspeed configs")
+        training_args = GRPOConfig(
+            **training_args.to_dict(),
+            deepspeed = "./scripts/zero3_offload.json"
+        )
+    
     
     trainer_cls = Qwen2VLGRPOTrainer if not training_args.use_vllm else Qwen2VLGRPOVLLMTrainer
     print("using: ", trainer_cls)

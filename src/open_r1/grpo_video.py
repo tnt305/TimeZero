@@ -257,7 +257,7 @@ def main(script_args, training_args, model_args):
     # Get reward functions
     reward_funcs = [reward_funcs_registry[func] for func in script_args.reward_funcs]
 
-    trainer_cls = Qwen2VLGRPOTrainer if not training_args.use_vllm else Qwen2VLGRPOVLLMTrainer
+    trainer_cls = Qwen2VLGRPOTrainer #if not training_args.use_vllm else Qwen2VLGRPOVLLMTrainer
     print("Using trainer class:", trainer_cls)
 
     # Initialize trainer với cả LoRA và GRPO config
@@ -290,7 +290,6 @@ if __name__ == "__main__":
             "--num_generations", "1",
             "--torch_dtype", "float16",
             "--attn_implementation", "eager",
-            "--use_vllm", "True",
             "--per_device_train_batch_size", "1",
             "--per_device_eval_batch_size", "1",
             "--lr_scheduler_type", "cosine",

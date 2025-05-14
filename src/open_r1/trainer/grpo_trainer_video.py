@@ -424,7 +424,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         video_grid_thw = prompt_inputs["video_grid_thw"]
 
         # Generate completions
-        with torch.cuda.amp.autocast(device_type = "cuda", dtype=torch.float16):
+        with torch.amp.autocast(device_type = "cuda", dtype=torch.float16):
             with unwrap_model_for_generation(model, self.accelerator) as unwrapped_model:
                 prompt_completion_ids = unwrapped_model.generate(**prompt_inputs, generation_config=self.generation_config)
 

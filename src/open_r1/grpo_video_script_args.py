@@ -1,3 +1,7 @@
+from dataclasses import dataclass, field
+from trl import ScriptArguments
+from typing import Optional
+
 @dataclass
 class GRPOScriptArguments(ScriptArguments):
     """

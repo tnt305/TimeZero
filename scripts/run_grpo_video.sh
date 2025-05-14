@@ -21,8 +21,8 @@ torchrun --nproc_per_node="2" \
     --train_data_path kaggle/working/tv360_train.jsonl \
     --eval_data_path kaggle/working/tv360_eval.jsonl \
     --dataset_name tv360_video \
-    --max_prompt_length 512 \
-    --max_completion_length 256 \
+    # --max_prompt_length 512 \
+    # --max_completion_length 256 \
     --num_generations 1 \
     --per_device_train_batch_size 1 \
     --per_device_eval_batch_size 1 \

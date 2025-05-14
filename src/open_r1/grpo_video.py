@@ -237,12 +237,12 @@ def main(script_args, training_args, model_args):
     else:
         lora_config = None
 
-    if isinstance(training_args, GRPOConfig):
-        print("using deepspeed configs")
-        training_args = GRPOConfig(
-            **training_args.to_dict(),
-            deepspeed = "./scripts/zero3_offload.json"
-        )
+    # if isinstance(training_args, GRPOConfig):
+    #     print("using deepspeed configs")
+    #     training_args = GRPOConfig(
+    #         **training_args.to_dict(),
+    #         deepspeed = "./scripts/zero3_offload.json"
+    #     )
     
     
     trainer_cls = Qwen2VLGRPOTrainer if not training_args.use_vllm else Qwen2VLGRPOVLLMTrainer
@@ -278,6 +278,7 @@ if __name__ == "__main__":
     parser = TrlParser((GRPOScriptArguments, GRPOConfig, ModelConfig))
     default_args = [
             "--dataset_name", "tv360_video",
+            "--deepspeed" ,"./configs/zero3.yaml",
             "--model_name_or_path", "Qwen/Qwen2-VL-2B-Instruct",
             "--trust_remote_code", "True",
             "--fp16", "True",

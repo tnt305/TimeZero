@@ -284,6 +284,20 @@ def main(script_args, training_args, model_args):
 
 if __name__ == "__main__":
     parser = TrlParser((GRPOScriptArguments, GRPOConfig, ModelConfig))
-    script_args, training_args, model_args = parser.parse_args_and_config()
+    default_args = [
+            "--dataset_name", "tv360_video",
+            "--model_name_or_path", "Qwen/Qwen2.5-VL-3B-Instruct",
+            "--trust_remote_code", "True",
+            "--fp16", "True",
+            "--num_generations", "1",
+            "--torch_dtype", "float16",
+            "--attn_implementation", "eager",
+            "--use_vllm", "True",
+            "--per_device_train_batch_size", "1",
+            "--per_device_eval_batch_size", "1",
+            "--lr_scheduler_type", "cosine",
+            "--gradient_accumulation_steps", "1",
+    ]
+    script_args, training_args, model_args = parser.parse_args_and_config(default_args)
     main(script_args, training_args, model_args)
 

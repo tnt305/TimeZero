@@ -284,12 +284,12 @@ if __name__ == "__main__":
     parser = TrlParser((GRPOScriptArguments, GRPOConfig, ModelConfig))
     default_args = [
             "--dataset_name", "tv360_video",
-            "--model_name_or_path", "Qwen/Qwen2.5-VL-3B-Instruct-AWQ",
+            "--model_name_or_path", "Qwen/Qwen2.5-VL-3B-Instruct",
             "--trust_remote_code", "True",
             "--fp16", "True",
             "--num_generations", "1",
             "--torch_dtype", "float16",
-            "--attn_implementation", "eager",
+            "--attn_implementation", "sdpa",
             "--load_in_4bit", "True",
             "--per_device_train_batch_size", "1",
             "--per_device_eval_batch_size", "1",

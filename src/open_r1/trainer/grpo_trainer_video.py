@@ -51,8 +51,11 @@ from trl.trainer.utils import generate_model_card, get_comet_experiment_url
 import copy
 from qwen_vl_utils import process_vision_info
 
-if is_peft_available():
-    from peft import PeftConfig, get_peft_model
+from peft import (
+    PeftConfig, 
+    get_peft_model, 
+    prepare_model_for_kbit_training
+)
 
 if is_wandb_available():
     import wandb
@@ -237,6 +240,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                     "This argument can only be used when the `model` argument is a string."
                 )
 
+        model = prepare_model_for_kbit_training(model)
         if peft_config is not None:
             model = get_peft_model(model, peft_config)
 

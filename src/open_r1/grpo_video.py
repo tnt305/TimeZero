@@ -243,7 +243,6 @@ def main(script_args, training_args, model_args):
         )
     else:
         lora_config = None
-    lora_config = None
     training_args = GRPOConfig(
         deepspeed = "./scripts/zero3_offload.json",
         fp16 = True,
@@ -267,6 +266,11 @@ def main(script_args, training_args, model_args):
     trainer_cls = Qwen2VLGRPOTrainer #if not training_args.use_vllm else Qwen2VLGRPOVLLMTrainer
     print("Using trainer class:", trainer_cls)
 
+    # Prepare model for k-bit training
+    model = prepare_model_for_kbit_training(model)
+    # Apply LoRA
+    model = get_peft_model(model, lora_config)
+    
     # Initialize trainer với cả LoRA và GRPO config
     trainer = trainer_cls(
         model=model_args.model_name_or_path,

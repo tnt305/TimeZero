@@ -211,7 +211,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                     model,
                     torch_dtype=torch.float16,
                     use_sliding_window=True,
-                    quantization_config = quantization_config,
+                    # quantization_config = quantization_config,
                     **model_init_kwargs)
             elif "Qwen2.5-VL" in model_id:
                 # breakpoint()

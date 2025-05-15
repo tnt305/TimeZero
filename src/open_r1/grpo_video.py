@@ -246,7 +246,6 @@ def main(script_args, training_args, model_args):
 
     training_args = GRPOConfig(
         deepspeed = "./scripts/zero3_offload.json",
-        trust_remote_code = True,
         fp16 = True,
         num_generations = 1,
         torch_dtype = "float16",

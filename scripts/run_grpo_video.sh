@@ -12,15 +12,15 @@ export AWQ_FORCE_FP16="1"
 
 export DEBUG_MODE="true"
 export LOG_PATH="./qwen2.5_7b_vl_tg_video.txt"
-accelerate launch \
+!ACCELERATE_LOG_LEVEL=info accelerate launch \
     --multi_gpu \
     --num_processes=2 \
     --mixed_precision=fp16 \
     --gradient_accumulation_steps=1 \
     src/open_r1/grpo_video.py \
-    --deepspeed scripts/zero3_offload.json \
+    --config_file configs/zero3.yaml \
     --output_dir $OUTDIR \
-    --model_name_or_path Qwen/Qwen2-VL-2B-Instruct-GPTQ-Int4 \
+    --model_name_or_path Qwen/Qwen2-VL-2B-Instruct-AWQ \
     --preprocessed_data_path ./dataset \
     --train_data_path kaggle/working/tv360_train.jsonl \
     --eval_data_path kaggle/working/tv360_eval.jsonl \
@@ -30,10 +30,8 @@ accelerate launch \
     --data_seed 42 \
     --gradient_checkpointing true \
     --attn_implementation eager \
-    --num_train_epochs 2 \
     --run_name $WANDB_NAME \
     --report_to wandb \
-    --save_steps 50 \
     --save_only_model true
 
 # torchrun --nproc_per_node="2" \

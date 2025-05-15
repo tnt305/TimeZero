@@ -171,7 +171,7 @@ def get_duration(video_path):
 def load_json_dataset(train_data_path, eval_data_path, preprocessed_data_path= "./dataset"): # Modified to accept preprocessed_data_path
     max_pixels = 3584 * 28 * 28
     min_pixels = 16 * 28 * 28
-    processor = AutoProcessor.from_pretrained("Qwen/Qwen2.5-VL-3B-Instruct-AWQ")
+    processor = AutoProcessor.from_pretrained("Qwen/Qwen2.5-VL-3B-Instruct")
     def create_dataset_from_json(file_path, split_name):
         with open(file_path, 'r') as f:
             data = [json.loads(line) for line in f if line.strip()]
@@ -227,30 +227,21 @@ def main(script_args, training_args, model_args):
     if script_args.use_lora:
         lora_config = LoraConfig(
             task_type="CAUSAL_LM",
-            target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+            target_modules=["k_proj", "v_proj", "o_proj"], #"gate_proj", "up_proj", "down_proj", "q_proj", 
             inference_mode=False,
-            r=script_args.lora_r,
-            lora_alpha=script_args.lora_alpha,
-            lora_dropout=script_args.lora_dropout,
+            r= 4,
+            lora_alpha=16,
+            lora_dropout=0.025,
             bias="none",
         )
     else:
         lora_config = None
 
-    if not isinstance(training_args, GRPOConfig):
+    if isinstance(training_args, GRPOConfig):
+        print("using deepspeed configs")
         training_args = GRPOConfig(
             **training_args.to_dict(),
-            max_prompt_length=script_args.max_prompt_length,
-            max_completion_length=script_args.max_completion_length,
-            num_generations=script_args.num_generations,
-            beta=script_args.beta,
-            # Thêm các tham số tối ưu cho GPU 16GB
-            per_device_train_batch_size=1,
-            gradient_accumulation_steps=4,
-            fp16=True,
-            gradient_checkpointing=True,
-            optim="adamw_torch",
-            lr_scheduler_type="cosine",
+            deepspeed = "./scripts/zero3_offload.json"
         )
     
     trainer_cls = Qwen2VLGRPOTrainer if not training_args.use_vllm else Qwen2VLGRPOVLLMTrainer
@@ -259,7 +250,7 @@ def main(script_args, training_args, model_args):
     # Get reward functions
     reward_funcs = [reward_funcs_registry[func] for func in script_args.reward_funcs]
 
-    trainer_cls = Qwen2VLGRPOTrainer if not training_args.use_vllm else Qwen2VLGRPOVLLMTrainer
+    trainer_cls = Qwen2VLGRPOTrainer #if not training_args.use_vllm else Qwen2VLGRPOVLLMTrainer
     print("Using trainer class:", trainer_cls)
 
     # Initialize trainer với cả LoRA và GRPO config
@@ -284,6 +275,19 @@ def main(script_args, training_args, model_args):
 
 if __name__ == "__main__":
     parser = TrlParser((GRPOScriptArguments, GRPOConfig, ModelConfig))
-    script_args, training_args, model_args = parser.parse_args_and_config()
+    default_args = [
+            "--dataset_name", "tv360_video",
+            "--model_name_or_path", "Qwen/Qwen2.5-VL-3B-Instruct",
+            "--trust_remote_code", "True",
+            "--fp16", "True",
+            "--num_generations", "1",
+            "--torch_dtype", "float16",
+            "--attn_implementation", "eager",
+            "--load_in_4bit", "True",
+            "--per_device_train_batch_size", "1",
+            "--per_device_eval_batch_size", "1",
+            "--lr_scheduler_type", "cosine",
+            "--gradient_accumulation_steps", "4",
+    ]
+    script_args, training_args, model_args = parser.parse_args_and_config(default_args)
     main(script_args, training_args, model_args)
-

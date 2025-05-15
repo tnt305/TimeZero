@@ -37,6 +37,8 @@ from transformers import (
     Trainer,
     TrainerCallback,
     is_wandb_available,
+    TorchAoConfig,
+    BitsAndBytesConfig
 )
 from transformers.integrations.deepspeed import is_deepspeed_zero3_enabled
 from transformers.utils import is_peft_available
@@ -180,6 +182,13 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         model_init_kwargs = args.model_init_kwargs or {}
         model_init_kwargs["attn_implementation"] = attn_implementation
 
+        quantization_config = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_compute_dtype=torch.float16,
+                bnb_4bit_quant_type="nf4",
+                bnb_4bit_use_double_quant=True
+            )
+        
         if isinstance(model, str):
             model_id = model
             torch_dtype = model_init_kwargs.get("torch_dtype")
@@ -198,13 +207,19 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                 False if args.gradient_checkpointing else model_init_kwargs.get("use_cache")
             )
             if "Qwen2-VL" in model_id:
-                model = Qwen2VLForConditionalGeneration.from_pretrained(model, **model_init_kwargs)
+                model = Qwen2VLForConditionalGeneration.from_pretrained(
+                    model,
+                    torch_dtype=torch.float16,
+                    use_sliding_window=True,
+                    quantization_config = quantization_config,
+                    **model_init_kwargs)
             elif "Qwen2.5-VL" in model_id:
                 # breakpoint()
                 model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
                     model, 
                     torch_dtype=torch.float16,
                     use_sliding_window=True,
+                    quantization_config = quantization_config,
                     **model_init_kwargs
                     )
             elif "Aria" in model_id:
@@ -251,7 +266,13 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         # Processing class
         if processing_class is None:
             if "Qwen2-VL" in model_id or "Qwen2.5-VL" in model_id or "Aria" in model_id:
-                processing_class = AutoProcessor.from_pretrained(model_id)
+                processing_class = AutoProcessor.from_pretrained(
+                    model_id,
+                    image_size={
+                        "shortest_edge": 224,
+                        "longest_edge": 224
+                    }
+                    )
                 pad_token_id = processing_class.tokenizer.pad_token_id
                 processing_class.pad_token_id = pad_token_id
                 processing_class.eos_token_id = processing_class.tokenizer.eos_token_id
@@ -399,11 +420,11 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         prompts = [self.make_conversation_video(example) for example in inputs]
         
         # print(prompts)
-        prompts_text = [self.processing_class.apply_chat_template(prompt, tokenize=False, add_generation_prompt=True) for prompt in prompts]
+        prompts_text = [self.processing_class.apply_chat_template(prompt, video_fps = 2, tokenize=False, add_generation_prompt=True) for prompt in prompts]
         
 
-        video_inputs = torch.load(os.path.join(inputs[0]['preprocessed_path'], "video_inputs.pt"))#[x["video_inputs"] for x in inputs]
-        fps_inputs = torch.load(os.path.join(inputs[0]['preprocessed_path'], "video_kwargs.pt"))[0]["fps"]#[x["video_kwargs"]["fps"] for x in inputs]
+        video_inputs = torch.load(os.path.join("/kaggle/working/dataset",inputs[0]['preprocessed_path'], "video_inputs.pt"))#[x["video_inputs"] for x in inputs]
+        fps_inputs = 2.0 #torch.load(os.path.join("/kaggle/working/dataset",inputs[0]['preprocessed_path'], "video_kwargs.pt"))[0]["fps"]#[x["video_kwargs"]["fps"] for x in inputs]
 
         # only support bs==1
         prompt_inputs = self.processing_class(
@@ -424,7 +445,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         video_grid_thw = prompt_inputs["video_grid_thw"]
 
         # Generate completions
-        with torch.cuda.amp.autocast(device = "cuda", dtype=torch.float16):
+        with torch.amp.autocast(device_type = "cuda", dtype=torch.float16):
             with unwrap_model_for_generation(model, self.accelerator) as unwrapped_model:
                 prompt_completion_ids = unwrapped_model.generate(**prompt_inputs, generation_config=self.generation_config)
 

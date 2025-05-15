@@ -394,7 +394,8 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                 {"role": "user", "content": [
                         {"type": "text", "text": QUESTION_TEMPLATE.replace("[EVENT]", example["problem"])},
                         {"type": "video", 
-                        "video": example["video_path"], 
+                        "video": example["video_path"],
+                        "fps": 2.0,
                         "total_pixels": 3584 * 28 * 28, 
                         "min_pixels": 16 * 28 * 28,
                         },
@@ -411,7 +412,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         prompts = [self.make_conversation_video(example) for example in inputs]
         
         # print(prompts)
-        prompts_text = [self.processing_class.apply_chat_template(prompt, video_fps = 2, tokenize=False, add_generation_prompt=True) for prompt in prompts]
+        prompts_text = [self.processing_class.apply_chat_template(prompt, tokenize=False, add_generation_prompt=True) for prompt in prompts]
         
 
         video_inputs = torch.load(os.path.join("/kaggle/working/dataset",inputs[0]['preprocessed_path'], "video_inputs.pt"))#[x["video_inputs"] for x in inputs]
@@ -422,7 +423,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
             text=[prompts_text[0]], 
             images= None, # Video support only 
             videos=[video_inputs], 
-            video_fps=[fps_inputs], 
+            fps=[fps_inputs], 
             padding=True, 
             return_tensors="pt", 
             padding_side="left", 

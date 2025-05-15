@@ -414,7 +414,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         prompts = [self.make_conversation_video(example) for example in inputs]
         
         # print(prompts)
-        prompts_text = [self.processing_class.apply_chat_template(prompt, tokenize=False, add_generation_prompt=True) for prompt in prompts]
+        prompts_text = [self.processing_class.apply_chat_template(prompt, video_fps = 2, tokenize=False, add_generation_prompt=True) for prompt in prompts]
         
 
         video_inputs = torch.load(os.path.join("/kaggle/working/dataset",inputs[0]['preprocessed_path'], "video_inputs.pt"))#[x["video_inputs"] for x in inputs]

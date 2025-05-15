@@ -16,7 +16,7 @@ accelerate launch \
     --multi_gpu \
     --num_processes=2 \
     --mixed_precision=fp16 \
-    --gradient_accumulation_steps=4 \
+    --gradient_accumulation_steps=2 \
     src/open_r1/grpo_video.py \
     --deepspeed scripts/zero3_offload.json \
     --output_dir $OUTDIR \

@@ -417,7 +417,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
 
         video_inputs = torch.load(os.path.join("/kaggle/working/dataset",inputs[0]['preprocessed_path'], "video_inputs.pt"))#[x["video_inputs"] for x in inputs]
         fps_inputs = 2.0 #torch.load(os.path.join("/kaggle/working/dataset",inputs[0]['preprocessed_path'], "video_kwargs.pt"))[0]["fps"]#[x["video_kwargs"]["fps"] for x in inputs]
-
+        print(video_inputs, "video_inputs==========================================")
         # only support bs==1
         prompt_inputs = self.processing_class(
             text=[prompts_text[0]], 

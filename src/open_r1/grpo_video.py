@@ -172,11 +172,8 @@ def load_json_dataset(train_data_path, eval_data_path, preprocessed_data_path= "
     max_pixels = 3584 * 28 * 28
     min_pixels = 16 * 28 * 28
     processor = AutoProcessor.from_pretrained(
-        "Qwen/Qwen2-VL-2B-Instruct-AWQ",
-        size={
-            "shortest_edge": 224,
-            "longest_edge": 224
-        })
+        "Qwen/Qwen2-VL-2B-Instruct",
+        )
     def create_dataset_from_json(file_path, split_name):
         with open(file_path, 'r') as f:
             data = [json.loads(line) for line in f if line.strip()]
@@ -247,12 +244,22 @@ def main(script_args, training_args, model_args):
     else:
         lora_config = None
 
-    # if isinstance(training_args, GRPOConfig):
-    #     print("using deepspeed configs")
-    #     training_args = GRPOConfig(
-    #         **training_args.to_dict(),
-    #         deepspeed = "./scripts/zero3_offload.json"
-    #     )
+    training_args = GRPOConfig(
+        deepspeed = "./scripts/zero3_offload.json",
+        trust_remote_code = True,
+        fp16 = True,
+        num_generations = 1,
+        torch_dtype = "float16",
+        attn_implementation = "eager",
+        load_in_4bit = True,
+        optim = "adamw_8bit",
+        lr_scheduler_type = "cosine",
+        gradient_accumulation_steps = 1,
+        per_device_train_batch_size = 1,
+        per_device_eval_batch_size = 1,
+        num_train_epochs = 1,
+        
+    )
     
     
     trainer_cls = Qwen2VLGRPOTrainer if not training_args.use_vllm else Qwen2VLGRPOVLLMTrainer
@@ -289,7 +296,7 @@ if __name__ == "__main__":
     default_args = [
             "--dataset_name", "tv360_video",
             "--deepspeed" ,"./scripts/zero3_offload.json",
-            "--model_name_or_path", "Qwen/Qwen2-VL-2B-Instruct-AWQ",
+            "--model_name_or_path", "Qwen/Qwen2-VL-2B-Instruct",
             "--trust_remote_code", "True",
             "--fp16", "True",
             "--num_generations", "1",

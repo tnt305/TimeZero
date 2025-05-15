@@ -248,7 +248,6 @@ def main(script_args, training_args, model_args):
         deepspeed = "./scripts/zero3_offload.json",
         fp16 = True,
         num_generations = 1,
-        torch_dtype = "float16",
         attn_implementation = "eager",
         load_in_4bit = True,
         optim = "adamw_8bit",

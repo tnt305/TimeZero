@@ -12,7 +12,8 @@ export AWQ_FORCE_FP16="1"
 
 export DEBUG_MODE="true"
 export LOG_PATH="./qwen2.5_7b_vl_tg_video.txt"
-!ACCELERATE_LOG_LEVEL=info accelerate launch \
+
+ACCELERATE_LOG_LEVEL=info accelerate launch \
     --multi_gpu \
     --num_processes=2 \
     --mixed_precision=fp16 \

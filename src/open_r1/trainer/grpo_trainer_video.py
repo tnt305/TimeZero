@@ -389,13 +389,12 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         return inputs
 
     def make_conversation_video(self, example):
-        print(example)
         return [
                 # {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": [
                         {"type": "text", "text": QUESTION_TEMPLATE.replace("[EVENT]", example["problem"])},
                         {"type": "video", 
-                        "video": example["video"], 
+                        "video": example["video_path"], 
                         "total_pixels": 3584 * 28 * 28, 
                         "min_pixels": 16 * 28 * 28,
                         },

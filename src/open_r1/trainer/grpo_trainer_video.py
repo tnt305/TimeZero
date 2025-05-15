@@ -207,12 +207,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                 False if args.gradient_checkpointing else model_init_kwargs.get("use_cache")
             )
             if "Qwen2-VL" in model_id:
-                model = Qwen2VLForConditionalGeneration.from_pretrained(
-                    model,
-                    torch_dtype=torch.float16,
-                    use_sliding_window=True,
-                    quantization_config = quantization_config,
-                    **model_init_kwargs)
+                model = Qwen2VLForConditionalGeneration.from_pretrained(model, **model_init_kwargs)
             elif "Qwen2.5-VL" in model_id:
                 # breakpoint()
                 model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
@@ -266,13 +261,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         # Processing class
         if processing_class is None:
             if "Qwen2-VL" in model_id or "Qwen2.5-VL" in model_id or "Aria" in model_id:
-                processing_class = AutoProcessor.from_pretrained(
-                    model_id,
-                    image_size={
-                        "shortest_edge": 224,
-                        "longest_edge": 224
-                    }
-                    )
+                processing_class = AutoProcessor.from_pretrained(model_id)
                 pad_token_id = processing_class.tokenizer.pad_token_id
                 processing_class.pad_token_id = pad_token_id
                 processing_class.eos_token_id = processing_class.tokenizer.eos_token_id

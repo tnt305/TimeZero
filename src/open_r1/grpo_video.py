@@ -171,7 +171,15 @@ def get_duration(video_path):
 def load_json_dataset(train_data_path, eval_data_path, preprocessed_data_path= "./dataset"): # Modified to accept preprocessed_data_path
     max_pixels = 3584 * 28 * 28
     min_pixels = 16 * 28 * 28
+<<<<<<< HEAD
     processor = AutoProcessor.from_pretrained("Qwen/Qwen2.5-VL-3B-Instruct")
+=======
+    processor = AutoProcessor.from_pretrained("Qwen/Qwen2-VL-2B-Instruct-AWQ",
+                                             size={
+        "shortest_edge": 224,
+        "longest_edge": 224
+    })
+>>>>>>> 854f3ccff56c68c9e735591b6b64338bdcbb4093
     def create_dataset_from_json(file_path, split_name):
         with open(file_path, 'r') as f:
             data = [json.loads(line) for line in f if line.strip()]
@@ -227,22 +235,39 @@ def main(script_args, training_args, model_args):
     if script_args.use_lora:
         lora_config = LoraConfig(
             task_type="CAUSAL_LM",
+<<<<<<< HEAD
             target_modules=["k_proj", "v_proj", "o_proj"], #"gate_proj", "up_proj", "down_proj", "q_proj", 
             inference_mode=False,
             r= 4,
             lora_alpha=16,
+=======
+            target_modules=["gate_proj", "up_proj", "down_proj"], #"gate_proj", "up_proj", "down_proj", "q_proj", "k_proj", "v_proj", "o_proj"
+            inference_mode=False,
+            r= 4,
+            lora_alpha=8,
+>>>>>>> 854f3ccff56c68c9e735591b6b64338bdcbb4093
             lora_dropout=0.025,
             bias="none",
         )
     else:
         lora_config = None
 
+<<<<<<< HEAD
     if isinstance(training_args, GRPOConfig):
         print("using deepspeed configs")
         training_args = GRPOConfig(
             **training_args.to_dict(),
             deepspeed = "./scripts/zero3_offload.json"
         )
+=======
+    # if isinstance(training_args, GRPOConfig):
+    #     print("using deepspeed configs")
+    #     training_args = GRPOConfig(
+    #         **training_args.to_dict(),
+    #         deepspeed = "./scripts/zero3_offload.json"
+    #     )
+    
+>>>>>>> 854f3ccff56c68c9e735591b6b64338bdcbb4093
     
     trainer_cls = Qwen2VLGRPOTrainer if not training_args.use_vllm else Qwen2VLGRPOVLLMTrainer
     print("using: ", trainer_cls)
@@ -277,13 +302,19 @@ if __name__ == "__main__":
     parser = TrlParser((GRPOScriptArguments, GRPOConfig, ModelConfig))
     default_args = [
             "--dataset_name", "tv360_video",
+<<<<<<< HEAD
             "--model_name_or_path", "Qwen/Qwen2.5-VL-3B-Instruct",
+=======
+            "--deepspeed" ,"./scripts/zero3_offload.json",
+            "--model_name_or_path", "Qwen/Qwen2-VL-2B-Instruct-AWQ",
+>>>>>>> 854f3ccff56c68c9e735591b6b64338bdcbb4093
             "--trust_remote_code", "True",
             "--fp16", "True",
             "--num_generations", "1",
             "--torch_dtype", "float16",
             "--attn_implementation", "eager",
             "--load_in_4bit", "True",
+<<<<<<< HEAD
             "--per_device_train_batch_size", "1",
             "--per_device_eval_batch_size", "1",
             "--lr_scheduler_type", "cosine",
@@ -291,3 +322,14 @@ if __name__ == "__main__":
     ]
     script_args, training_args, model_args = parser.parse_args_and_config(default_args)
     main(script_args, training_args, model_args)
+=======
+            "--optim", "adamw_8bit",
+            "--per_device_train_batch_size", "1",
+            "--per_device_eval_batch_size", "1",
+            "--lr_scheduler_type", "cosine",
+            "--gradient_accumulation_steps", "1",
+    ]
+    script_args, training_args, model_args = parser.parse_args_and_config(default_args)
+    main(script_args, training_args, model_args)
+
+>>>>>>> 854f3ccff56c68c9e735591b6b64338bdcbb4093

@@ -267,9 +267,9 @@ def main(script_args, training_args, model_args):
     print("Using trainer class:", trainer_cls)
 
     # Prepare model for k-bit training
-    model = prepare_model_for_kbit_training(model)
-    # Apply LoRA
-    model = get_peft_model(model, lora_config)
+    # model = prepare_model_for_kbit_training(model)
+    # # Apply LoRA
+    # model = get_peft_model(model, lora_config)
     
     # Initialize trainer với cả LoRA và GRPO config
     trainer = trainer_cls(

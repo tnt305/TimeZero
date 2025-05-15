@@ -227,10 +227,10 @@ def main(script_args, training_args, model_args):
     if script_args.use_lora:
         lora_config = LoraConfig(
             task_type="CAUSAL_LM",
-            target_modules=["k_proj", "v_proj", "o_proj"], #"gate_proj", "up_proj", "down_proj", "q_proj", 
+            target_modules=["gate_proj", "up_proj", "down_proj"], #"gate_proj", "up_proj", "down_proj", "q_proj", "k_proj", "v_proj", "o_proj"
             inference_mode=False,
             r= 4,
-            lora_alpha=16,
+            lora_alpha=8,
             lora_dropout=0.025,
             bias="none",
         )
@@ -286,6 +286,7 @@ if __name__ == "__main__":
             "--torch_dtype", "float16",
             "--attn_implementation", "eager",
             "--load_in_4bit", "True",
+            "--optim", "adamw_8bit",
             "--per_device_train_batch_size", "1",
             "--per_device_eval_batch_size", "1",
             "--lr_scheduler_type", "cosine",

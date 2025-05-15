@@ -266,7 +266,13 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         # Processing class
         if processing_class is None:
             if "Qwen2-VL" in model_id or "Qwen2.5-VL" in model_id or "Aria" in model_id:
-                processing_class = AutoProcessor.from_pretrained(model_id)
+                processing_class = AutoProcessor.from_pretrained(
+                    model_id,
+                    image_size={
+                        "shortest_edge": 224,
+                        "longest_edge": 224
+                    }
+                    )
                 pad_token_id = processing_class.tokenizer.pad_token_id
                 processing_class.pad_token_id = pad_token_id
                 processing_class.eos_token_id = processing_class.tokenizer.eos_token_id

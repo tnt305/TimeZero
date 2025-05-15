@@ -172,7 +172,7 @@ def load_json_dataset(train_data_path, eval_data_path, preprocessed_data_path= "
     max_pixels = 3584 * 28 * 28
     min_pixels = 16 * 28 * 28
     processor = AutoProcessor.from_pretrained("Qwen/Qwen2-VL-2B-Instruct-AWQ",
-                                             image_size={
+                                             image_processor={
         "shortest_edge": 224,
         "longest_edge": 224
     })

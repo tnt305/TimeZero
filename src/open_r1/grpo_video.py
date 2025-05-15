@@ -195,6 +195,11 @@ def load_json_dataset(train_data_path, eval_data_path, preprocessed_data_path= "
             os.makedirs(example_output_dir, exist_ok=True)
 
             _, video_inputs, video_kwargs, fps_inputs = preprocess_video_inner(video_path, processor, max_pixels, min_pixels)
+            # Validate video inputs
+            if video_inputs is None or len(video_inputs) == 0:
+                print(f"Warning: No valid frames extracted from {video_path}")
+                continue
+            
             torch.save(video_inputs, os.path.join(example_output_dir, "video_inputs.pt"))
             with open(os.path.join(example_output_dir, "video_kwargs.json"), 'w') as f:
                 json.dump(video_kwargs, f)

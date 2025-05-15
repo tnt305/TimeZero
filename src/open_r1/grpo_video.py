@@ -252,19 +252,6 @@ def main(script_args, training_args, model_args):
         )
     else:
         lora_config = None
-    model = Qwen2VLForConditionalGeneration.from_pretrained(
-        model_args.model_name_or_path,
-        torch_dtype=torch.float16,
-        use_sliding_window=True,
-        quantization_config=quantization_config,
-        device_map="auto",
-    )
-    
-    # Prepare model for k-bit training
-    model = prepare_model_for_kbit_training(model)
-    
-    # Apply LoRA
-    model = get_peft_model(model, lora_config)
     
     training_args = GRPOConfig(
         deepspeed = "./scripts/zero3_offload.json",
@@ -296,7 +283,7 @@ def main(script_args, training_args, model_args):
     
     # Initialize trainer với cả LoRA và GRPO config
     trainer = trainer_cls(
-        model=model,
+        model=model_args.model_name_or_path,
         reward_funcs=reward_funcs,
         args=training_args,
         train_dataset=dataset[script_args.dataset_train_split],

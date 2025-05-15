@@ -1,0 +1,16 @@
+qwen_vl_utils
+transformers
+accelerate
+datasets
+trl[vllm]
+peft
+math_verify
+hf-xet
+av
+vllm
+wandb
+bitsandbytes
+torchao
+deepspeed
+autoawq>=0.1.8 # upgraded to latest version 
+flash-attn==2.7.4.post1

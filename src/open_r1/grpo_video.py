@@ -243,7 +243,7 @@ def main(script_args, training_args, model_args):
         )
     else:
         lora_config = None
-
+    lora_config = None
     training_args = GRPOConfig(
         deepspeed = "./scripts/zero3_offload.json",
         fp16 = True,
@@ -289,6 +289,7 @@ def main(script_args, training_args, model_args):
 
 if __name__ == "__main__":
     parser = TrlParser((GRPOScriptArguments, GRPOConfig, ModelConfig))
+
     default_args = [
             "--dataset_name", "tv360_video",
             "--deepspeed" ,"./scripts/zero3_offload.json",

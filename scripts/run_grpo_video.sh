@@ -20,7 +20,7 @@ accelerate launch \
     src/open_r1/grpo_video.py \
     --deepspeed scripts/zero3_offload.json \
     --output_dir $OUTDIR \
-    --model_name_or_path Qwen/Qwen2-VL-2B-Instruct \
+    --model_name_or_path Qwen/Qwen2-VL-2B-Instruct-GPTQ-Int4 \
     --preprocessed_data_path ./dataset \
     --train_data_path kaggle/working/tv360_train.jsonl \
     --eval_data_path kaggle/working/tv360_eval.jsonl \

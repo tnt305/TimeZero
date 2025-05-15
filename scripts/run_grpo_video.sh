@@ -19,7 +19,7 @@ ACCELERATE_LOG_LEVEL=info accelerate launch \
     --mixed_precision=fp16 \
     --gradient_accumulation_steps=1 \
     src/open_r1/grpo_video.py \
-    --config_file configs/zero3.yaml \
+    --config_file scripts/zero3_offload.json \
     --output_dir $OUTDIR \
     --model_name_or_path Qwen/Qwen2-VL-2B-Instruct-AWQ \
     --preprocessed_data_path ./dataset \

@@ -268,7 +268,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
             if "Qwen2-VL" in model_id or "Qwen2.5-VL" in model_id or "Aria" in model_id:
                 processing_class = AutoProcessor.from_pretrained(
                     model_id,
-                    image_size={
+                    size={
                         "shortest_edge": 224,
                         "longest_edge": 224
                     }

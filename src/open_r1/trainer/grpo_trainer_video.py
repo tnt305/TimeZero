@@ -261,7 +261,9 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         # Processing class
         if processing_class is None:
             if "Qwen2-VL" in model_id or "Qwen2.5-VL" in model_id or "Aria" in model_id:
-                processing_class = AutoProcessor.from_pretrained(model_id)
+                processing_class = AutoProcessor.from_pretrained(
+                    model_id, size={"shortest_edge": 224, "longest_edge": 224}
+                )
                 pad_token_id = processing_class.tokenizer.pad_token_id
                 processing_class.pad_token_id = pad_token_id
                 processing_class.eos_token_id = processing_class.tokenizer.eos_token_id
@@ -387,12 +389,13 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         return inputs
 
     def make_conversation_video(self, example):
+        print(example)
         return [
                 # {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": [
                         {"type": "text", "text": QUESTION_TEMPLATE.replace("[EVENT]", example["problem"])},
                         {"type": "video", 
-                        "video": example["video_path"], 
+                        "video": example["video"], 
                         "total_pixels": 3584 * 28 * 28, 
                         "min_pixels": 16 * 28 * 28,
                         },
@@ -420,7 +423,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
             text=[prompts_text[0]], 
             images= None, # Video support only 
             videos=[video_inputs], 
-            fps=[fps_inputs], 
+            video_fps=[fps_inputs], 
             padding=True, 
             return_tensors="pt", 
             padding_side="left", 

@@ -240,7 +240,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                     "This argument can only be used when the `model` argument is a string."
                 )
 
-        model = prepare_model_for_kbit_training(model)
+        # model = prepare_model_for_kbit_training(model)
         if peft_config is not None:
             model = get_peft_model(model, peft_config)
 

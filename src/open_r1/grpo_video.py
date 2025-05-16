@@ -262,7 +262,7 @@ def main(script_args, training_args, model_args):
     
     
     # trainer_cls = Qwen2VLGRPOTrainer if not training_args.use_vllm else Qwen2VLGRPOVLLMTrainer
-    print("using: ", trainer_cls)
+    # print("using: ", trainer_cls)
     
     # Get reward functions
     reward_funcs = [reward_funcs_registry[func] for func in script_args.reward_funcs]

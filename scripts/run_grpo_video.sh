@@ -6,7 +6,7 @@ export PYTHONPATH=".:$PYTHONPATH"
 OUTDIR=outputs_video
 
 # Thêm các biến môi trường mới
-export CUDA_VISIBLE_DEVICES="0,1"
+export CUDA_VISIBLE_DEVICES="0,1,2,3"
 export TRITON_DISABLE_BF16="1"
 export AWQ_FORCE_FP16="1"
 
@@ -15,7 +15,7 @@ export LOG_PATH="./qwen2.5_7b_vl_tg_video.txt"
 
 ACCELERATE_LOG_LEVEL=info accelerate launch \
     --multi_gpu \
-    --num_processes=2 \
+    --num_processes=4 \
     --mixed_precision=fp16 \
     --gradient_accumulation_steps=1 \
     src/open_r1/grpo_video.py \

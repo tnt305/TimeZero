@@ -175,7 +175,7 @@ def load_json_dataset(train_data_path, eval_data_path, preprocessed_data_path= "
     max_pixels = 3584 * 28 * 28
     min_pixels = 16 * 28 * 28
     processor = AutoProcessor.from_pretrained(
-        "Qwen/Qwen2-VL-2B-Instruct",
+        "Qwen/Qwen2.5-VL-3B-Instruct",
         )
     def create_dataset_from_json(file_path, split_name):
         with open(file_path, 'r') as f:
@@ -234,12 +234,6 @@ def main(script_args, training_args, model_args):
         script_args.preprocessed_data_path # Pass preprocessed_data_path
     )
 
-    quantization_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_compute_dtype=torch.float16,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_use_double_quant=True
-    )
     if script_args.use_lora:
         lora_config = LoraConfig(
             task_type="CAUSAL_LM",
@@ -267,7 +261,7 @@ def main(script_args, training_args, model_args):
     )
     
     
-    trainer_cls = Qwen2VLGRPOTrainer if not training_args.use_vllm else Qwen2VLGRPOVLLMTrainer
+    # trainer_cls = Qwen2VLGRPOTrainer if not training_args.use_vllm else Qwen2VLGRPOVLLMTrainer
     print("using: ", trainer_cls)
     
     # Get reward functions
@@ -307,7 +301,7 @@ if __name__ == "__main__":
     default_args = [
             "--dataset_name", "tv360_video",
             "--deepspeed" ,"./scripts/zero3_offload.json",
-            "--model_name_or_path", "Qwen/Qwen2-VL-2B-Instruct",
+            "--model_name_or_path", "Qwen/Qwen2.5-VL-3B-Instruct",
             "--trust_remote_code", "True",
             "--fp16", "True",
             "--num_generations", "1",

@@ -307,7 +307,6 @@ if __name__ == "__main__":
             "--num_generations", "1",
             "--torch_dtype", "float16",
             "--attn_implementation", "eager",
-            "--load_in_4bit", "True",
             "--optim", "adamw_8bit",
             "--per_device_train_batch_size", "1",
             "--per_device_eval_batch_size", "1",

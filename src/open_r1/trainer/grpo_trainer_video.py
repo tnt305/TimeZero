@@ -213,7 +213,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                 model = Qwen2VLForConditionalGeneration.from_pretrained(
                     model, 
                     torch_dtype=torch.float16,
-                    quantization_config = quantization_config,
+                    # quantization_config = quantization_config,
                     device_map = "auto",
                     **model_init_kwargs
                 )
@@ -223,7 +223,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                     model, 
                     torch_dtype=torch.float16,
                     use_sliding_window=True,
-                    quantization_config = quantization_config,
+                    # quantization_config = quantization_config,
                     device_map = "auto",
                     **model_init_kwargs
                     )
@@ -253,7 +253,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                     model_id, 
                     torch_dtype=torch.float16,
                     use_sliding_window=True,
-                    load_in_8bit = True,
+                    # load_in_8bit = True,
                     device_map = "auto",
                     **model_init_kwargs
                     )

@@ -16,7 +16,7 @@ export LOG_PATH="./qwen2.5_7b_vl_tg_video.txt"
 ACCELERATE_LOG_LEVEL=info accelerate launch \
     --multi_gpu \
     --num_processes=4 \
-    --mixed_precision=fp16 \
+    --mixed_precision=bf16 \
     --gradient_accumulation_steps=1 \
     src/open_r1/grpo_video.py \
     --config_file scripts/zero3_offload.json \

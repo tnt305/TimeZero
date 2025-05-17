@@ -301,7 +301,7 @@ if __name__ == "__main__":
     default_args = [
             "--dataset_name", "tv360_video",
             "--deepspeed" ,"./scripts/zero3_offload.json",
-            "--model_name_or_path", "/kaggle/input/qwen2.5-vl/transformers/3b-instruct/2",
+            "--model_name_or_path", "Qwen/Qwen2.5-VL-3B-Instruct",
             "--trust_remote_code", "True",
             "--fp16", "True",
             "--num_generations", "1",

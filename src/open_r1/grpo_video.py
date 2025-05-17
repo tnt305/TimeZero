@@ -175,7 +175,7 @@ def load_json_dataset(train_data_path, eval_data_path, preprocessed_data_path= "
     max_pixels = 3584 * 28 * 28
     min_pixels = 16 * 28 * 28
     processor = AutoProcessor.from_pretrained(
-        "/kaggle/input/qwen2.5-vl/transformers/3b-instruct/2",
+        "Qwen/Qwen2.5-VL-3B-Instruct",
         )
     def create_dataset_from_json(file_path, split_name):
         with open(file_path, 'r') as f:

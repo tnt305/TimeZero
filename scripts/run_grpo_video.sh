@@ -27,7 +27,7 @@ ACCELERATE_LOG_LEVEL=info accelerate launch \
     --eval_data_path kaggle/working/tv360_eval.jsonl \
     --dataset_name tv360_video \
     --fp16 \
-    --torch_dtype float16 \
+    --torch_dtype bfloat16 \
     --data_seed 42 \
     --gradient_checkpointing true \
     --attn_implementation eager \

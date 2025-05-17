@@ -187,7 +187,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
 
         quantization_config = BitsAndBytesConfig(
                 load_in_4bit=True,
-                bnb_4bit_compute_dtype=torch.float16,
+                bnb_4bit_compute_dtype=torch.bfloat16,
                 bnb_4bit_quant_type="nf4",
                 bnb_4bit_use_double_quant=True
             )
@@ -212,7 +212,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
             if "Qwen2-VL" in model_id:
                 model = Qwen2VLForConditionalGeneration.from_pretrained(
                     model, 
-                    torch_dtype=torch.float16,
+                    torch_dtype=torch.bfloat16,
                     # quantization_config = quantization_config,
                     device_map = "auto",
                     **model_init_kwargs
@@ -221,7 +221,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                 # breakpoint()
                 model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
                     model, 
-                    torch_dtype=torch.float16,
+                    torch_dtype=torch.bfloat16,
                     use_sliding_window=True,
                     # quantization_config = quantization_config,
                     device_map = "auto",
@@ -251,7 +251,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
             elif "Qwen2.5-VL" in model_id:
                 self.ref_model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
                     model_id, 
-                    torch_dtype=torch.float16,
+                    torch_dtype=torch.bfloat16,
                     use_sliding_window=True,
                     # load_in_8bit = True,
                     device_map = "auto",
@@ -449,7 +449,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         video_grid_thw = prompt_inputs["video_grid_thw"]
 
         # Generate completions
-        with torch.amp.autocast(device_type = "cuda", dtype=torch.float16):
+        with torch.amp.autocast(device_type = "cuda", dtype=torch.bfloat16):
             with unwrap_model_for_generation(model, self.accelerator) as unwrapped_model:
                 prompt_completion_ids = unwrapped_model.generate(**prompt_inputs, generation_config=self.generation_config)
 

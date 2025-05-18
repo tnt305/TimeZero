@@ -249,14 +249,15 @@ def main(script_args, training_args, model_args):
     
     training_args = GRPOConfig(
         deepspeed = "./scripts/zero3_offload.json",
-        fp16 = True,
+        bf16 = True,
         num_generations = 1,
-        optim = "adamw_8bit",
+        optim = "adamw_torch",
         lr_scheduler_type = "cosine",
         gradient_accumulation_steps = 1,
         per_device_train_batch_size = 1,
         per_device_eval_batch_size = 1,
         num_train_epochs = 1,
+        torch_dtype=torch.bfloat16,
         
     )
     
@@ -302,16 +303,15 @@ if __name__ == "__main__":
             "--dataset_name", "tv360_video",
             "--deepspeed" ,"./scripts/zero3_offload.json",
             "--model_name_or_path", "/kaggle/working/Qwen2.5-VL-3B-Instruct",
-            "--trust_remote_code", "True",
-            "--fp16", "True",
+            "--bf16", "True",
             "--num_generations", "1",
             "--torch_dtype", "bfloat16",
             "--attn_implementation", "eager",
-            "--optim", "adamw_8bit",
+            "--optim", "adamw_torch",
             "--per_device_train_batch_size", "1",
             "--per_device_eval_batch_size", "1",
             "--lr_scheduler_type", "cosine",
-            "--gradient_accumulation_steps", "1",
+            "--gradient_accumulation_steps", "4",
     ]
     script_args, training_args, model_args = parser.parse_args_and_config(default_args)
     main(script_args, training_args, model_args)

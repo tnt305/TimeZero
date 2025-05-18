@@ -364,7 +364,12 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
 
         if self.ref_model is not None:
             if self.is_deepspeed_enabled:
-                self.ref_model = prepare_deepspeed(self.ref_model, self.accelerator)
+                try:
+                    self.ref_model = prepare_deepspeed(self.ref_model, self.accelerator)
+                except Exception as e:
+                    print(f"Error preparing DeepSpeed model: {str(e)}")
+                    # Fallback to non-DeepSpeed mode
+                    self.ref_model = self.accelerator.prepare_model(self.ref_model, evaluation_mode=True)
             else:
                 self.ref_model = self.accelerator.prepare_model(self.ref_model, evaluation_mode=True)
 

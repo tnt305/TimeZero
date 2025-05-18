@@ -21,7 +21,7 @@ ACCELERATE_LOG_LEVEL=info accelerate launch \
     src/open_r1/grpo_video.py \
     --config_file scripts/zero3_offload.json \
     --output_dir $OUTDIR \
-    --model_name_or_path /kaggle/working/qwen2.5-vl-3b-instruct \
+    --model_name_or_path /kaggle/working/Qwen2.5-VL-3B-Instruct \
     --preprocessed_data_path ./dataset \
     --train_data_path kaggle/working/tv360_train.jsonl \
     --eval_data_path kaggle/working/tv360_eval.jsonl \

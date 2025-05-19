@@ -264,6 +264,8 @@ def main(script_args, training_args, model_args):
         # ddp_find_unused_parameters=False,  # Thêm dòng này
         # ddp_backend="nccl",  # Thêm dòng này
         use_vllm=True,
+        vllm_device = "cuda:3",  # Sử dụng GPU cuối cùng cho vLLM
+        vllm_gpu_memory_utilization = 0.9,  # Sử dụng 90% GPU memory
         
     )
     
@@ -321,6 +323,9 @@ if __name__ == "__main__":
             "--per_device_eval_batch_size", "1",
             "--lr_scheduler_type", "cosine",
             "--gradient_accumulation_steps", "1",
+            "--use_vllm", "True",
+            "--vllm_device", "cuda:3",  # Chỉ định GPU cho vLLM
+            "--vllm_gpu_memory_utilization", "0.9",
     ]
     script_args, training_args, model_args = parser.parse_args_and_config(default_args)
     main(script_args, training_args, model_args)

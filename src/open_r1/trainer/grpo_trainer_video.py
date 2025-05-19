@@ -213,7 +213,6 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                 model = Qwen2VLForConditionalGeneration.from_pretrained(
                     model, 
                     torch_dtype=torch.bfloat16,
-                    device_map = "auto",
                     # quantization_config = quantization_config,
                     **model_init_kwargs
                 )

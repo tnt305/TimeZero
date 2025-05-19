@@ -290,10 +290,6 @@ def main(script_args, training_args, model_args):
         attn_implementation=model_args.attn_implementation,
         max_pixels=script_args.max_pixels,
         min_pixels=script_args.min_pixels,
-        model_init_kwargs={
-            "torch_dtype": torch.float16,  # Set proper dtype for AWQ
-            "device_map": "auto",  # Automatically handle device placement
-        }
     )
 
     # Train và push model

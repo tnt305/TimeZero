@@ -9,22 +9,8 @@ export CUDA_VISIBLE_DEVICES="0,1,2,3"
 export TRITON_DISABLE_BF16="0"
 export AWQ_FORCE_FP16="0"
 
-# Thiết lập biến môi trường cho giao diện mạng
-export NCCL_SOCKET_IFNAME=eth0
-export GLOO_SOCKET_IFNAME=eth0
-
-# Biến môi trường bổ sung cho hiệu suất NCCL
-export NCCL_DEBUG=INFO
-export NCCL_IB_DISABLE=0
-export NCCL_IB_HCA=mlx5
-
 export DEBUG_MODE="true"
 export LOG_PATH="/kaggle/working/TimeZero/qwen2.5_7b_vl_tg_video.txt"
-
-# Biến môi trường cho distributed training
-export MASTER_ADDR="127.0.0.1"
-export MASTER_PORT="12361"
-export WORLD_SIZE="4"
 
 
 torchrun --nproc_per_node="4" \

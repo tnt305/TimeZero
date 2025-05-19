@@ -254,7 +254,7 @@ def main(script_args, training_args, model_args):
     training_args = GRPOConfig(
         # deepspeed = "./scripts/zero3_offload.json",
         bf16 = True,
-        num_generations = 1,
+        num_generations = 2,
         optim = "adamw_torch",
         lr_scheduler_type = "cosine",
         gradient_accumulation_steps = 1,
@@ -303,6 +303,9 @@ def main(script_args, training_args, model_args):
 
 
 if __name__ == "__main__":
+    import torch
+    from torch.distributed.device_mesh import init_device_mesh
+    init_device_mesh(device_mesh_size=4)
     parser = TrlParser((GRPOScriptArguments, GRPOConfig, ModelConfig))
 
     default_args = [

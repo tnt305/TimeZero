@@ -217,6 +217,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                     # quantization_config = quantization_config,
                     **model_init_kwargs
                 )
+                model.to("cuda")
             elif "Qwen2.5-VL" in model_id:
                 # breakpoint()
                 model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
@@ -226,11 +227,14 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                     quantization_config = quantization_config,
                     **model_init_kwargs
                     )
+                model.to("cuda")
             elif "Aria" in model_id:
                 model_init_kwargs.pop("use_cache")
                 model = AriaForConditionalGeneration.from_pretrained(model, **model_init_kwargs)
+                model.to("cuda")
             else:
                 model = AutoModelForCausalLM.from_pretrained(model, **model_init_kwargs)
+                model.to("cuda")
         else:
             model_id = model.config._name_or_path
             if args.model_init_kwargs is not None:
@@ -241,7 +245,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
 
         # model = prepare_model_for_kbit_training(model)
         if peft_config is not None:
-            model = prepare_model_for_kbit_training(model, use_gradient_checkpointing = True)
+            # model = prepare_model_for_kbit_training(model, use_gradient_checkpointing = True)
             model = get_peft_model(model, peft_config)
 
         # Reference model

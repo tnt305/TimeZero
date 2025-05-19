@@ -450,8 +450,8 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         prompt_inputs = self.processing_class(
             text=[prompts_text[0]], 
             images= None, # Video support only 
-            videos=[video_inputs], 
-            fps=[fps_inputs], 
+            videos=video_inputs, 
+            fps=fps_inputs, 
             padding=True, 
             return_tensors="pt", 
             padding_side="left", 

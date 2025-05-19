@@ -176,6 +176,10 @@ def load_json_dataset(train_data_path, eval_data_path, preprocessed_data_path= "
     min_pixels = 16 * 28 * 28
     processor = AutoProcessor.from_pretrained(
         "/kaggle/working/TimeZero/Qwen2-VL-2B-Instruct-AWQ",
+        size = {
+            "shortest_edge": 224,
+            "longest_edge": 398,
+        }
         )
     def create_dataset_from_json(file_path, split_name):
         with open(file_path, 'r') as f:

@@ -216,7 +216,6 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                     # quantization_config = quantization_config,
                     **model_init_kwargs
                 )
-                model.to("cuda")
             elif "Qwen2.5-VL" in model_id:
                 # breakpoint()
                 model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
@@ -250,7 +249,12 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         # Reference model
         if is_deepspeed_zero3_enabled():
             if "Qwen2-VL" in model_id:
-                self.ref_model = Qwen2VLForConditionalGeneration.from_pretrained(model_id, **model_init_kwargs)
+                self.ref_model = Qwen2VLForConditionalGeneration.from_pretrained(
+                    model_id, 
+                    torch_dtype=torch.bfloat16,
+                    # quantization_config = quantization_config,
+                    **model_init_kwargs
+                    )
             elif "Qwen2.5-VL" in model_id:
                 self.ref_model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
                     model_id, 
@@ -277,7 +281,8 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
             if "Qwen2-VL" in model_id or "Qwen2.5-VL" in model_id or "Aria" in model_id:
                 processing_class = AutoProcessor.from_pretrained(
                     model_id, 
-                    size={"shortest_edge": 224, "longest_edge": 398}
+                    size={"shortest_edge": 224, "longest_edge": 398},
+                    torch_dtype=torch.bfloat16,
                 )
                 pad_token_id = processing_class.tokenizer.pad_token_id
                 processing_class.pad_token_id = pad_token_id
@@ -295,7 +300,11 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         for i, reward_func in enumerate(reward_funcs):
             if isinstance(reward_func, str):
                 reward_funcs[i] = AutoModelForSequenceClassification.from_pretrained(
-                    reward_func, num_labels=1, **model_init_kwargs
+                    reward_func, 
+                    num_labels=1, 
+                    torch_dtype=torch.bfloat16,
+                    # quantization_config = quantization_config,
+                    **model_init_kwargs
                 )
         self.reward_funcs = reward_funcs
 

@@ -41,7 +41,7 @@ torchrun --nproc_per_node="4" \
     --train_data_path kaggle/working/train.jsonl \
     --eval_data_path kaggle/working/eval.jsonl \
     --dataset_name tv360_video \
-    --num-generations 2 \
+    --num-generations 1 \
     --per_device_train_batch_size 1 \
     --per_device_eval_batch_size 1 \
     --gradient_accumulation_steps 1 \

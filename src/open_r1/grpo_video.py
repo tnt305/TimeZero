@@ -305,9 +305,9 @@ def main(script_args, training_args, model_args):
 
 
 if __name__ == "__main__":
-    import torch
-    from torch.distributed.device_mesh import init_device_mesh
-    init_device_mesh("cuda", (2, 2))
+    # import torch
+    # from torch.distributed.device_mesh import init_device_mesh
+    # init_device_mesh("cuda", (2, 2))
     parser = TrlParser((GRPOScriptArguments, GRPOConfig, ModelConfig))
 
     default_args = [
@@ -315,7 +315,7 @@ if __name__ == "__main__":
             "--deepspeed" ,"./scripts/zero3_offload.json",
             "--model_name_or_path", "/kaggle/working/Qwen2-VL-2B-Instruct",
             "--bf16", "True",
-            "--num_generations", "2",
+            "--num_generations", "1",
             "--torch_dtype", "bfloat16",
             "--attn_implementation", "flash_attention_2",
             "--optim", "adamw_torch",

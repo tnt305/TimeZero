@@ -57,7 +57,7 @@ torchrun --nproc_per_node="4" \
     --torch_dtype bfloat16 \
     --data_seed 42 \
     --gradient_checkpointing true \
-    --attn_implementation eager \
+    --attn_implementation flash_attention_2 \
     --num_train_epochs 2 \
     --run_name $WANDB_NAME \
     --report_to wandb \

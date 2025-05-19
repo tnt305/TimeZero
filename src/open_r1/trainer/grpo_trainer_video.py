@@ -172,7 +172,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         peft_config: Optional["PeftConfig"] = None,
         max_pixels: Optional[int] = 12845056,
         min_pixels: Optional[int] = 3136,
-        attn_implementation: str = "eager",
+        attn_implementation: str = "flash_attention_2",
     ):
         # Args
         if args is None:

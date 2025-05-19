@@ -305,7 +305,7 @@ if __name__ == "__main__":
             "--bf16", "True",
             "--num_generations", "1",
             "--torch_dtype", "bfloat16",
-            "--attn_implementation", "eager",
+            "--attn_implementation", "flash_attention_2",
             "--optim", "adamw_torch",
             "--per_device_train_batch_size", "1",
             "--per_device_eval_batch_size", "1",

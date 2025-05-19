@@ -275,7 +275,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                 processing_class = AutoProcessor.from_pretrained(
                     model_id, 
                     size={"shortest_edge": 224, "longest_edge": 398}
-                ).to("cuda")
+                )
                 pad_token_id = processing_class.tokenizer.pad_token_id
                 processing_class.pad_token_id = pad_token_id
                 processing_class.eos_token_id = processing_class.tokenizer.eos_token_id

@@ -437,7 +437,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
             raise ValueError("The GRPOTrainer does not support returning outputs")
         torch.cuda.empty_cache()
         
-        
+        print(inputs, "inputs")
         prompts = [self.make_conversation_video(example) for example in inputs]
         
         # print(prompts)

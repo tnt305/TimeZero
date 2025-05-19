@@ -182,18 +182,18 @@ class Qwen2VLGRPOVLLMTrainer_Video(Trainer):
             if "Qwen2-VL" in model_id:
                 model = Qwen2VLForConditionalGeneration.from_pretrained(
                     model, **model_init_kwargs
-                )
+                ).to("cuda")
             elif "Qwen2.5-VL" in model_id:
                 model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
                     model, 
                     torch_dtype=torch.bfloat16,
                     **model_init_kwargs
-                )
+                ).to("cuda")
             elif "Aria" in model_id:
                 model_init_kwargs.pop("use_cache")
                 model = AriaForConditionalGeneration.from_pretrained(
                     model, **model_init_kwargs
-                )
+                ).to("cuda")
             else:
                 model = AutoModelForCausalLM.from_pretrained(model, **model_init_kwargs)
         else:
@@ -213,20 +213,24 @@ class Qwen2VLGRPOVLLMTrainer_Video(Trainer):
                 self.ref_model = Qwen2VLForConditionalGeneration.from_pretrained(
                     model_id, **model_init_kwargs
                 )
+                self.ref_model.to("cuda")
             elif "Qwen2.5-VL" in model_id:
                 self.ref_model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
                     model_id, 
                     torch_dtype=torch.bfloat16,
                     **model_init_kwargs
                 )
+                self.ref_model.to("cuda")
             elif "Aria" in model_id:
                 self.ref_model = AriaForConditionalGeneration.from_pretrained(
                     model_id, **model_init_kwargs
                 )
+                self.ref_model.to("cuda")
             else:
                 self.ref_model = AutoModelForCausalLM.from_pretrained(
                     model_id, **model_init_kwargs
                 )
+                self.ref_model.to("cuda")
         elif peft_config is None:
             # If PEFT configuration is not provided, create a reference model based on the initial model.
             self.ref_model = create_reference_model(model)

@@ -305,7 +305,7 @@ def main(script_args, training_args, model_args):
 if __name__ == "__main__":
     import torch
     from torch.distributed.device_mesh import init_device_mesh
-    init_device_mesh(device_mesh_size=4)
+    init_device_mesh("cuda", (2, 2))
     parser = TrlParser((GRPOScriptArguments, GRPOConfig, ModelConfig))
 
     default_args = [

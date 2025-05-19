@@ -263,9 +263,9 @@ def main(script_args, training_args, model_args):
         num_train_epochs = 1,
         # ddp_find_unused_parameters=False,  # Thêm dòng này
         # ddp_backend="nccl",  # Thêm dòng này
-        use_vllm=True,
-        vllm_device = "cuda:3",  # Sử dụng GPU cuối cùng cho vLLM
-        vllm_gpu_memory_utilization = 0.9,  # Sử dụng 90% GPU memory
+        # use_vllm=True,
+        # vllm_device = "cuda:3",  # Sử dụng GPU cuối cùng cho vLLM
+        # vllm_gpu_memory_utilization = 0.9,  # Sử dụng 90% GPU memory
         
     )
     
@@ -276,7 +276,7 @@ def main(script_args, training_args, model_args):
     # Get reward functions
     reward_funcs = [reward_funcs_registry[func] for func in script_args.reward_funcs]
 
-    trainer_cls = Qwen2VLGRPOVLLMTrainer #Qwen2VLGRPOTrainer #if not training_args.use_vllm else Qwen2VLGRPOVLLMTrainer
+    trainer_cls = Qwen2VLGRPOTrainer #Qwen2VLGRPOTrainer #if not training_args.use_vllm else Qwen2VLGRPOVLLMTrainer
     print("Using trainer class:", trainer_cls)
 
     # Prepare model for k-bit training
@@ -323,9 +323,9 @@ if __name__ == "__main__":
             "--per_device_eval_batch_size", "1",
             "--lr_scheduler_type", "cosine",
             "--gradient_accumulation_steps", "1",
-            "--use_vllm", "True",
-            "--vllm_device", "cuda:3",  # Chỉ định GPU cho vLLM
-            "--vllm_gpu_memory_utilization", "0.9",
+            # "--use_vllm", "True",
+            # "--vllm_device", "cuda:3",  # Chỉ định GPU cho vLLM
+            # "--vllm_gpu_memory_utilization", "0.9",
     ]
     script_args, training_args, model_args = parser.parse_args_and_config(default_args)
     main(script_args, training_args, model_args)

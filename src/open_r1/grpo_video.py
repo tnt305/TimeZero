@@ -315,7 +315,6 @@ if __name__ == "__main__":
             "--per_device_eval_batch_size", "1",
             "--lr_scheduler_type", "cosine",
             "--gradient_accumulation_steps", "1",
-            "--tensor_parallel_size", "1",
     ]
     script_args, training_args, model_args = parser.parse_args_and_config(default_args)
     main(script_args, training_args, model_args)

@@ -213,7 +213,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                 model = Qwen2VLForConditionalGeneration.from_pretrained(
                     model, 
                     torch_dtype=torch.bfloat16,
-                    # quantization_config = quantization_config,
+                    quantization_config = quantization_config,
                     **model_init_kwargs
                 )
             elif "Qwen2.5-VL" in model_id:
@@ -222,7 +222,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                     model, 
                     torch_dtype=torch.bfloat16,
                     use_sliding_window=True,
-                    # quantization_config = quantization_config,
+                    quantization_config = quantization_config,
                     **model_init_kwargs
                     )
             elif "Aria" in model_id:
@@ -251,6 +251,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                     model_id, 
                     torch_dtype=torch.bfloat16,
                     use_sliding_window=True,
+                    quantization_config = quantization_config,
                     # load_in_8bit = True,
                     **model_init_kwargs
                     )
@@ -431,7 +432,6 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
 
         video_inputs = torch.load(os.path.join("/kaggle/working/dataset",inputs[0]['preprocessed_path'], "video_inputs.pt"))#[x["video_inputs"] for x in inputs]
         fps_inputs = 2.0 #torch.load(os.path.join("/kaggle/working/dataset",inputs[0]['preprocessed_path'], "video_kwargs.pt"))[0]["fps"]#[x["video_kwargs"]["fps"] for x in inputs]
-        print(video_inputs, "video_inputs==========================================")
         # only support bs==1
         prompt_inputs = self.processing_class(
             text=[prompts_text[0]], 

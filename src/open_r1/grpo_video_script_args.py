@@ -65,7 +65,7 @@ class GRPOScriptArguments(ScriptArguments):
     
     # LoRA arguments
     use_lora: bool = field(
-        default=False,
+        default=True,
         metadata={"help": "Whether to use LoRA for training"},
     )
     

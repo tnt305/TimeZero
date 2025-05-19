@@ -263,6 +263,7 @@ def main(script_args, training_args, model_args):
         num_train_epochs = 1,
         # ddp_find_unused_parameters=False,  # Thêm dòng này
         # ddp_backend="nccl",  # Thêm dòng này
+        use_vllm=True,
         
     )
     
@@ -273,7 +274,7 @@ def main(script_args, training_args, model_args):
     # Get reward functions
     reward_funcs = [reward_funcs_registry[func] for func in script_args.reward_funcs]
 
-    trainer_cls = Qwen2VLGRPOTrainer #if not training_args.use_vllm else Qwen2VLGRPOVLLMTrainer
+    trainer_cls = Qwen2VLGRPOVLLMTrainer #Qwen2VLGRPOTrainer #if not training_args.use_vllm else Qwen2VLGRPOVLLMTrainer
     print("Using trainer class:", trainer_cls)
 
     # Prepare model for k-bit training
@@ -307,6 +308,7 @@ if __name__ == "__main__":
     default_args = [
             "--dataset_name", "tv360_video",
             # "--deepspeed" ,"./scripts/zero3_offload.json",
+            "--config_file", "/kaggle/working/TimeZero/configs/zero3.yaml",
             "--model_name_or_path", "/kaggle/working/Qwen2-VL-2B-Instruct",
             "--bf16", "True",
             "--num_generations", "1",

@@ -43,7 +43,7 @@ torchrun --nproc_per_node="4" \
     src/open_r1/grpo_video.py \
     # --deepspeed /kaggle/working/TimeZero/scripts/zero3_offload.json \
     --output_dir $OUTDIR \
-    --model_name_or_path /kaggle/working/Qwen2.5-VL-3B-Instruct \
+    --model_name_or_path /kaggle/working/TimeZero/Qwen2-VL-2B-Instruct-AWQ \
     --preprocessed_data_path /kaggle/working/TimeZero/dataset \
     --train_data_path kaggle/working/train.jsonl \
     --eval_data_path kaggle/working/eval.jsonl \

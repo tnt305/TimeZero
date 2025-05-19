@@ -240,6 +240,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
 
         # model = prepare_model_for_kbit_training(model)
         if peft_config is not None:
+            model = prepare_model_for_kbit_training(model, use_gradient_checkpointing = True)
             model = get_peft_model(model, peft_config)
 
         # Reference model

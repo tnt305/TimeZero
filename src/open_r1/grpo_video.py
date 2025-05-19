@@ -308,7 +308,6 @@ if __name__ == "__main__":
     default_args = [
             "--dataset_name", "tv360_video",
             # "--deepspeed" ,"./scripts/zero3_offload.json",
-            "--config_file", "/kaggle/working/TimeZero/configs/zero3.yaml",
             "--model_name_or_path", "/kaggle/working/Qwen2-VL-2B-Instruct",
             "--bf16", "True",
             "--num_generations", "1",

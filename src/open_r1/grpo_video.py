@@ -307,10 +307,10 @@ if __name__ == "__main__":
 
     default_args = [
             "--dataset_name", "tv360_video",
-            # "--deepspeed" ,"./scripts/zero3_offload.json",
+            "--deepspeed" ,"./scripts/zero3_offload.json",
             "--model_name_or_path", "/kaggle/working/Qwen2-VL-2B-Instruct",
             "--bf16", "True",
-            "--num_generations", "1",
+            "--num_generations", "2",
             "--torch_dtype", "bfloat16",
             "--attn_implementation", "flash_attention_2",
             "--optim", "adamw_torch",

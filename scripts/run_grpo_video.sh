@@ -1,39 +1,31 @@
-
 export WANDB_PROJECT=Video-GRPO
 export WANDB_NAME=Qwen2.5_7b_TG
 
 export PYTHONPATH=".:$PYTHONPATH"
 OUTDIR=outputs_video
 
-# Thêm các biến môi trường mới
-export CUDA_VISIBLE_DEVICES="0,1,2,3"  # Sử dụng cả 4 GPU L4
-export TRITON_DISABLE_BF16="0"  # Cho phép sử dụng bfloat16
-export AWQ_FORCE_FP16="0"  # Tắt force fp16
+# Thiết lập GPU và các tùy chọn khác
+export CUDA_VISIBLE_DEVICES="0,1,2,3"
+export TRITON_DISABLE_BF16="0"
+export AWQ_FORCE_FP16="0"
+
+# Thiết lập biến môi trường cho giao diện mạng
+export NCCL_SOCKET_IFNAME=eth0
+export GLOO_SOCKET_IFNAME=eth0
+
+# Biến môi trường bổ sung cho hiệu suất NCCL
+export NCCL_DEBUG=INFO
+export NCCL_IB_DISABLE=0
+export NCCL_IB_HCA=mlx5
 
 export DEBUG_MODE="true"
 export LOG_PATH="/kaggle/working/TimeZero/qwen2.5_7b_vl_tg_video.txt"
 
-# ACCELERATE_LOG_LEVEL=info accelerate launch \
-#     --multi_gpu \
-#     --num_processes=4 \
-#     --mixed_precision=bf16 \
-#     --gradient_accumulation_steps=1 \
-#     src/open_r1/grpo_video.py \
-#     --config_file scripts/zero3_offload.json \
-#     --output_dir $OUTDIR \
-#     --model_name_or_path /kaggle/working/Qwen2.5-VL-3B-Instruct \
-#     --preprocessed_data_path ./dataset \
-#     --train_data_path kaggle/working/tv360_train.jsonl \
-#     --eval_data_path kaggle/working/tv360_eval.jsonl \
-#     --dataset_name tv360_video \
-#     --fp16 \
-#     --torch_dtype bfloat16 \
-#     --data_seed 42 \
-#     --gradient_checkpointing true \
-#     --attn_implementation eager \
-#     --run_name $WANDB_NAME \
-#     --report_to wandb \
-#     --save_only_model true
+# Biến môi trường cho distributed training
+export MASTER_ADDR="127.0.0.1"
+export MASTER_PORT="12361"
+export WORLD_SIZE="4"
+
 
 torchrun --nproc_per_node="4" \
     --nnodes="1" \

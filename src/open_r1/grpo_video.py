@@ -248,7 +248,7 @@ def main(script_args, training_args, model_args):
         lora_config = None
     
     training_args = GRPOConfig(
-        deepspeed = "./scripts/zero3_offload.json",
+        # deepspeed = "./scripts/zero3_offload.json",
         bf16 = True,
         num_generations = 1,
         optim = "adamw_torch",

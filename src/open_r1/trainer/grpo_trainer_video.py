@@ -43,11 +43,23 @@ from transformers import (
 from transformers.integrations.deepspeed import is_deepspeed_zero3_enabled
 from transformers.utils import is_peft_available
 
-from trl.data_utils import apply_chat_template, is_conversational, maybe_apply_chat_template
-from trl.models import create_reference_model, prepare_deepspeed, unwrap_model_for_generation
+from trl.data_utils import (
+    apply_chat_template, 
+    is_conversational, 
+    maybe_apply_chat_template
+)
+from trl.models import (
+    create_reference_model, 
+    prepare_deepspeed, 
+    unwrap_model_for_generation
+)
 from trl.trainer.grpo_config import GRPOConfig
-from trl.trainer.utils import generate_model_card, get_comet_experiment_url, selective_log_softmax
+from trl.trainer.utils import (
+    generate_model_card, 
+    get_comet_experiment_url, 
+)
 
+from src.open_r1.utils import selective_log_softmax
 import copy
 from qwen_vl_utils import process_vision_info
 

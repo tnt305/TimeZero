@@ -59,7 +59,7 @@ from trl.trainer.utils import (
     get_comet_experiment_url, 
 )
 
-from src.open_r1.utils import selective_log_softmax
+from trl.trainer.utils import selective_log_softmax
 import copy
 from qwen_vl_utils import process_vision_info
 

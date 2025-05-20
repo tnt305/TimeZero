@@ -5,7 +5,7 @@ export PYTHONPATH=".:$PYTHONPATH"
 OUTDIR=outputs_video
 
 # Thiết lập GPU và các tùy chọn khác
-export CUDA_VISIBLE_DEVICES="0,1,2,3"
+export CUDA_VISIBLE_DEVICES="0,1"
 export TRITON_DISABLE_BF16="0"
 export AWQ_FORCE_FP16="0"
 
@@ -13,7 +13,7 @@ export DEBUG_MODE="true"
 export LOG_PATH="/kaggle/working/TimeZero/qwen2.5_7b_vl_tg_video.txt"
 
 accelerate launch \
-    --num_processes 4 \
+    --num_processes 2 \
     --num_machines 1 \
     --machine_rank 0 \
     --main_process_ip "127.0.0.1" \

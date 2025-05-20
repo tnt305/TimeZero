@@ -20,9 +20,8 @@ torchrun --nproc_per_node="4" \
     --master_port="12361" \
     src/open_r1/grpo_video.py \
     --deepspeed /kaggle/working/TimeZero/scripts/zero3_offload.json \
-    # "--config_file", /kaggle/working/TimeZero/configs/zero3.yaml \
     --output_dir $OUTDIR \
-    --model_name_or_path /kaggle/working/Qwen2-VL-2B-Instruct \
+    --model_name_or_path unsloth/Qwen2.5-VL-3B-Instruct-unsloth-bnb-4bit \
     --preprocessed_data_path /kaggle/working/TimeZero/dataset \
     --train_data_path kaggle/working/train.jsonl \
     --eval_data_path kaggle/working/eval.jsonl \

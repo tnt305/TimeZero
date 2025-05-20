@@ -463,7 +463,7 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
                         {"type": "video", 
                         "video": example["video_path"],
                         "fps": 2.0,
-                        "total_pixels": 3584 * 28 * 28, 
+                        "total_pixels": 1024 * 28 * 28, 
                         "min_pixels": 16 * 28 * 28,
                         },
                     ]
@@ -476,11 +476,10 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         torch.cuda.empty_cache()
         
         print(inputs, "inputs")
-        prompts = [self.make_conversation_video(example) for example in inputs]
-        
+        prompts = [self.make_conversation_video(example) for example in inputs]    
         # print(prompts)
+        _, _, video_kwargs = process_vision_info(prompts, return_video_kwargs=True)
         prompts_text = [self.processing_class.apply_chat_template(prompt, tokenize=False, add_generation_prompt=True) for prompt in prompts]
-        _, _, video_kwargs = process_vision_info(prompts_text[0], return_video_kwargs=True)
 
         video_inputs = torch.load(os.path.join("/kaggle/working/dataset",inputs[0]['preprocessed_path'], "video_inputs.pt"))#[x["video_inputs"] for x in inputs]
         #fps_inputs = 2.0 #torch.load(os.path.join("/kaggle/working/dataset",inputs[0]['preprocessed_path'], "video_kwargs.pt"))[0]["fps"]#[x["video_kwargs"]["fps"] for x in inputs]

@@ -46,7 +46,7 @@ from transformers.utils import is_peft_available
 from trl.data_utils import apply_chat_template, is_conversational, maybe_apply_chat_template
 from trl.models import create_reference_model, prepare_deepspeed, unwrap_model_for_generation
 from trl.trainer.grpo_config import GRPOConfig
-from trl.trainer.utils import generate_model_card, get_comet_experiment_url
+from trl.trainer.utils import generate_model_card, get_comet_experiment_url, selective_log_softmax
 
 import copy
 from qwen_vl_utils import process_vision_info
@@ -399,17 +399,43 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
 
 
     # Get the per-token log probabilities for the completions for the model and the reference model
-    def _get_per_token_logps(self, model, input_ids, attention_mask, pixel_values_videos, video_grid_thw):
-        logits = model(input_ids, attention_mask=attention_mask, pixel_values_videos=pixel_values_videos, video_grid_thw=video_grid_thw).logits  # (B, L, V)
-        logits = logits[:, :-1, :]  # (B, L-1, V), exclude the last logit: it corresponds to the next token pred
-        input_ids = input_ids[:, 1:]  # (B, L-1), exclude the first input ID since we don't have logits for it
-        # Compute the log probabilities for the input tokens. Use a loop to reduce memory peak.
-        per_token_logps = []
-        for logits_row, input_ids_row in zip(logits, input_ids):
-            log_probs = logits_row.log_softmax(dim=-1)
-            token_log_prob = torch.gather(log_probs, dim=1, index=input_ids_row.unsqueeze(1)).squeeze(1)
-            per_token_logps.append(token_log_prob)
-        return torch.stack(per_token_logps)
+    def _get_per_token_logps(self, model, input_ids, attention_mask, **kwargs):
+        
+        ##### BEFORE
+        # logits = model(input_ids, attention_mask=attention_mask, pixel_values_videos=pixel_values_videos, video_grid_thw=video_grid_thw).logits  # (B, L, V)
+        # logits = logits[:, :-1, :]  # (B, L-1, V), exclude the last logit: it corresponds to the next token pred
+        # input_ids = input_ids[:, 1:]  # (B, L-1), exclude the first input ID since we don't have logits for it
+        # # Compute the log probabilities for the input tokens. Use a loop to reduce memory peak.
+        # per_token_logps = []
+        # for logits_row, input_ids_row in zip(logits, input_ids):
+        #     log_probs = logits_row.log_softmax(dim=-1)
+        #     token_log_prob = torch.gather(log_probs, dim=1, index=input_ids_row.unsqueeze(1)).squeeze(1)
+        #     per_token_logps.append(token_log_prob)
+        # return torch.stack(per_token_logps)
+
+        ###### AFTER
+        batch_size= input_ids.size(0)  # Chunk inputs into smaller batches to reduce memory peak
+        all_logps = []
+        logits_to_keep = 1
+        for i in range(0, input_ids.size(0), batch_size):
+            input_ids_batch = input_ids[i : i + batch_size]
+            attention_mask_batch = attention_mask[i : i + batch_size]
+
+            # We add 1 to `logits_to_keep` because the last logits of the sequence is later excluded
+            logits = model(
+                input_ids_batch,attention_mask_batch, **kwargs
+            ).logits
+            logits = logits[:, :-1, :]  # (B, L-1, V), exclude the last logit: it corresponds to the next token pred
+            input_ids_batch = input_ids_batch[:, -logits_to_keep:]
+            # For transformers<=4.48, logits_to_keep argument isn't supported, so here we drop logits ourselves.
+            # See https://github.com/huggingface/trl/issues/2770
+            logits = logits[:, -logits_to_keep:]
+            # Divide logits by sampling temperature.
+            # See https://huggingface.co/blog/the_n_implementation_details_of_rlhf_with_ppo#policy-training-implementation-details
+            logits = logits / self.temperature
+            logps = selective_log_softmax(logits, input_ids_batch)  # compute logprobs for the input tokens
+            all_logps.append(logps)
+        return torch.cat(all_logps, dim=0)
 
 
     # Trainer "prepares" the inputs before calling `compute_loss`. It converts to tensor and move to device.
@@ -442,24 +468,28 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         
         # print(prompts)
         prompts_text = [self.processing_class.apply_chat_template(prompt, tokenize=False, add_generation_prompt=True) for prompt in prompts]
-        
+        _, _, video_kwargs = process_vision_info(prompts_text[0], return_video_kwargs=True)
 
         video_inputs = torch.load(os.path.join("/kaggle/working/dataset",inputs[0]['preprocessed_path'], "video_inputs.pt"))#[x["video_inputs"] for x in inputs]
-        fps_inputs = 2.0 #torch.load(os.path.join("/kaggle/working/dataset",inputs[0]['preprocessed_path'], "video_kwargs.pt"))[0]["fps"]#[x["video_kwargs"]["fps"] for x in inputs]
+        #fps_inputs = 2.0 #torch.load(os.path.join("/kaggle/working/dataset",inputs[0]['preprocessed_path'], "video_kwargs.pt"))[0]["fps"]#[x["video_kwargs"]["fps"] for x in inputs]
         # only support bs==1
         prompt_inputs = self.processing_class(
             text=[prompts_text[0]], 
             images= None, # Video support only 
-            videos=video_inputs, 
-            fps=fps_inputs, 
+            videos=[video_inputs], 
             padding=True, 
             return_tensors="pt", 
             padding_side="left", 
             add_special_tokens=False,
+            **video_kwargs,
         )
 
         prompt_inputs = super()._prepare_inputs(prompt_inputs)
 
+        if self.max_prompt_length is not None:
+            prompt_inputs["input_ids"] = prompt_inputs["input_ids"][:, -self.max_prompt_length :]
+            prompt_inputs["attention_mask"] = prompt_inputs["attention_mask"][:, -self.max_prompt_length :]
+            
         prompt_ids, prompt_mask = prompt_inputs["input_ids"], prompt_inputs["attention_mask"]
         pixel_values_videos = prompt_inputs["pixel_values_videos"]
         video_grid_thw = prompt_inputs["video_grid_thw"]
@@ -487,19 +517,20 @@ class Qwen2VLGRPOTrainer_Video(Trainer):
         pixel_values_videos = prompt_inputs["pixel_values_videos"].repeat(self.num_generations, 1)
         video_grid_thw = prompt_inputs["video_grid_thw"].repeat_interleave(self.num_generations, dim=0)
 
-        per_token_logps = self._get_per_token_logps(model, prompt_completion_ids, attention_mask, pixel_values_videos, video_grid_thw)
+        per_token_logps = self._get_per_token_logps(model, prompt_completion_ids, attention_mask, **prompt_inputs)
         # Get rid of the prompt (-1 because of the shift done in get_per_token_logps)
         per_token_logps = per_token_logps[:, prompt_length - 1 :]
 
         with torch.inference_mode():
             if self.ref_model is not None:
-                ref_per_token_logps = self._get_per_token_logps(self.ref_model, prompt_completion_ids, attention_mask, pixel_values_videos, video_grid_thw)
+                ref_per_token_logps = self._get_per_token_logps(self.ref_model, prompt_completion_ids, attention_mask, **prompt_inputs)
             else:
                 with self.accelerator.unwrap_model(model).disable_adapter():
-                    ref_per_token_logps = self._get_per_token_logps(model, prompt_completion_ids, attention_mask, pixel_values_videos, video_grid_thw)
+                    ref_per_token_logps = self._get_per_token_logps(model, prompt_completion_ids, attention_mask, **prompt_inputs)
         ref_per_token_logps = ref_per_token_logps[:, prompt_length - 1 :]
 
         # Compute the KL divergence between the model and the reference model
+        # x_clamped = torch.clamp(ref_per_token_logps - per_token_logps, min=-10, max=10)  # 限制 x 的范围
         per_token_kl = torch.exp(ref_per_token_logps - per_token_logps) - (ref_per_token_logps - per_token_logps) - 1
 
         # Decode the generated completions
